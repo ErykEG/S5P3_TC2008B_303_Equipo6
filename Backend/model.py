@@ -700,9 +700,9 @@ class Habitacion(Model):
         for agent in self.schedule.agents:
             if isinstance(agent, RobotLimpieza):
                 if agent.contiene != None:
-                    positions.append({"x": agent.pos[0], "y": agent.pos[1],"load": agent.contiene})
+                    positions.append({"x": agent.pos[0], "y": agent.pos[1],"z": agent.contiene})
                 else:
-                    positions.append({"x": agent.pos[0], "y": agent.pos[1],"load": -1})
+                    positions.append({"x": agent.pos[0], "y": agent.pos[1],"z": -1})
         return positions
 
     def positions_to_json(self) -> str:
