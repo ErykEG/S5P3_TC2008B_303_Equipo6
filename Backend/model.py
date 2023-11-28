@@ -721,6 +721,10 @@ class Habitacion(Model):
                 if isinstance(obj, Celda) and obj.sucia:
                     return False
         return True
+    
+    def reset(self, num_agentes=None):
+        # Reinitialize the environment with the default or updated parameters
+        self.__init__(M=self.grid.width, N=self.grid.height, num_agentes=num_agentes or self.num_agentes)
 
 
 def get_grid(model: Model) -> np.ndarray:

@@ -1,6 +1,7 @@
 # server.py
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from threading import Thread
+from urllib.parse import urlparse, parse_qs
 from model import Habitacion, RobotLimpieza, Celda, Mueble, Cargador, Llegada, Salida, Estanteria, Sitio_espera
 import mesa
 import time
@@ -12,7 +13,7 @@ width = 50
 height = 50
 
 # Initiate model
-Model = Habitacion(width, height)
+Model = Habitacion(width, height, num_agentes=10)
 
 #server.launch(open_browser=True)
 class Server(BaseHTTPRequestHandler):
@@ -21,6 +22,27 @@ class Server(BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header('Content-type', 'application/json')
         self.end_headers()
+
+    def do_GET(self):
+        # Parse the query parameters
+        parsed_url = urlparse(self.path)
+        query_params = parse_qs(parsed_url.query)
+
+        # Check if 'num_agentes' parameter is provided
+        if 'num_agentes' in query_params:
+            try:
+                num_agentes = int(query_params['num_agentes'][0])
+
+                # Reset the model
+                Model.reset(num_agentes=num_agentes)
+                print(f"Number of robots set to: {num_agentes}")
+                print("Model reset")
+            except ValueError:
+                print("Invalid value for 'num_agentes'. It must be an integer.")
+
+        # Send a response (this is just an example response)
+        self._set_response()
+        self.wfile.write("GET request received".encode('utf-8'))
 
     def do_POST(self):
         try:
@@ -32,6 +54,7 @@ class Server(BaseHTTPRequestHandler):
         except Exception as e:
             print(f"Error processing POST request: {e}")
             self.send_error(400, "Bad Request")
+    
 
 def run(server_class=HTTPServer, handler_class=Server, port=8585):
     server_address = ('', port)
