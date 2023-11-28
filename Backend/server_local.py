@@ -40,7 +40,7 @@ class Server(BaseHTTPRequestHandler):
             except ValueError:
                 print("Invalid value for 'num_agentes'. It must be an integer.")
 
-        # Send a response (this is just an example response)
+        # Send a response
         self._set_response()
         self.wfile.write("GET request received".encode('utf-8'))
 
